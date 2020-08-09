@@ -5,6 +5,8 @@ import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author GangW
@@ -19,20 +21,23 @@ public class KafkaSourceSql {
             + " behavior STRING,"
             + " ts TIMESTAMP(3)"
             + ") WITH ("
-            + " 'connector.type' = 'kafka',  -- 指定连接类型是kafka"
-            + " 'connector.version' = 'universal',  -- 与我们之前Docker安装的kafka版本要一致"
-            + " 'connector.topic' = 'flink_sql_case1', -- 之前创建的topic"
-            + " 'connector.properties.group.id' = 'flink-test-0', -- 消费者组，相关概念可自行百度"
-            + " 'connector.startup-mode' = 'earliest-offset',  --指定从最早消费"
-            + " 'connector.properties.bootstrap.servers' = 'localhost:9092',  -- broker地址"
-            + " 'format.type' = 'json'  -- json格式，和topic中的消息格式保持一致"
+            + " 'connector.type' = 'kafka',  -- 指定连接类型是kafka\n"
+            + " 'connector.version' = 'universal',  -- 与我们之前Docker安装的kafka版本要一致\n"
+            + " 'connector.topic' = 'flink_sql_case1', -- 之前创建的topic\n"
+            + " 'connector.properties.group.id' = 'flink-test-0', -- 消费者组，相关概念可自行百度\n"
+            + " 'connector.startup-mode' = 'earliest-offset',  --指定从最早消费\n"
+            + " 'connector.properties.bootstrap.servers' = 'localhost:9092',  -- broker地址\n"
+            + " 'format.type' = 'json'  -- json格式，和topic中的消息格式保持一致\n"
             + ")";
     //@formatter: on
+    
+    private static Logger log = LoggerFactory.getLogger(KafkaSourceSql.class);
     
     public static void main(String[] args) throws Exception {
         // 构建StreamExecutionEnvironment
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
+        log.info("start");
         // 构建EnvironmentSettings 并指定Blink Planner
         EnvironmentSettings bsSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();
 
